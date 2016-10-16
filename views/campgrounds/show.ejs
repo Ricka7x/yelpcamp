@@ -1,4 +1,4 @@
-<% include partials/header %>
+<% include ../partials/header %>
 <div>
   <h2><%= campground.name %></h2>
   <img src="<%= campground.image %>" alt="">
@@ -7,9 +7,10 @@
   <form action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
     <button class="btn btn-danger">Delete</button>
   </form>
+  <a class="btn btn-success" href="/campgrounds/<%= campground._id %>/comments/new">Add new comment</a>
   <% campground.comments.forEach(function(comment){ %>
     <p><%= comment.text%></p>
     <p><%= comment.author%></p>
   <% })%>
 </div>
-<% include partials/footer %>
+<% include ../partials/footer %>
