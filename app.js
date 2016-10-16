@@ -1,4 +1,5 @@
 var bodyParser = require('body-parser');
+var expressSanitazer = require('express-sanitizer');
 var mongoose = require('mongoose');
 var methodOverride = require('method-override');
 var express = require('express');
@@ -7,6 +8,7 @@ var app = express();
 mongoose.connect('mongodb://localhost/yelpcamp');
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(expressSanitazer()); //always after body parser
 app.use(methodOverride('_method'));
 
 
@@ -36,6 +38,7 @@ app.get('/campgrounds', function(req, res){
 });
 
 app.post('/campgrounds', function(req, res){
+  req.body.campground.description = req.sanitize(req.body.campground.description);
   var newCampground = req.body.campground;
   Campground.create(newCampground, function(err, campground){
     if(err){
@@ -74,6 +77,7 @@ app.get('/campgrounds/:id/edit', function(req, res){
 });
 
 app.put('/campgrounds/:id', function(req, res){
+  req.body.campground.description = req.sanitize(req.body.campground.description);
   var id = req.params.id;
   var campground = req.body.campground;
   Campground.findByIdAndUpdate(id, campground, function(err, campground){
