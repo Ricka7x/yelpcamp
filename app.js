@@ -1,17 +1,16 @@
-var express = require('express');
-var app = express();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-
-
-// models
+var methodOverride = require('method-override');
+var express = require('express');
+var app = express();
 
 mongoose.connect('mongodb://localhost/yelpcamp');
-
-app.use(bodyParser.urlencoded({extended: true}));
 app.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(methodOverride('_method'));
 
 
+//MONGOOSE MODEL/CONFIG
 var campgroundSchema = new mongoose.Schema({
   name: String,
   image: String,
@@ -19,6 +18,8 @@ var campgroundSchema = new mongoose.Schema({
 });
 
 var Campground = mongoose.model('Campground', campgroundSchema);
+
+//ROUTES
 
 app.get('/',function(req, res){
   res.render('index');
@@ -35,10 +36,7 @@ app.get('/campgrounds', function(req, res){
 });
 
 app.post('/campgrounds', function(req, res){
-  var name = req.body.name;
-  var image = req.body.image;
-  var description = req.body.description;
-  var newCampground = {name: name, image: image, description: description}
+  var newCampground = req.body.campground;
   Campground.create(newCampground, function(err, campground){
     if(err){
       console.log(err);
@@ -64,6 +62,41 @@ app.get('/campgrounds/:id', function(req, res){
   });
 });
 
+app.get('/campgrounds/:id/edit', function(req, res){
+  var id = req.params.id;
+  Campground.findById(id, function(err, campground){
+    if(err){
+      console.log(err);
+    }else{
+      res.render('edit',{campground: campground});
+    }
+  });
+});
+
+app.put('/campgrounds/:id', function(req, res){
+  var id = req.params.id;
+  var campground = req.body.campground;
+  Campground.findByIdAndUpdate(id, campground, function(err, campground){
+    if(err){
+      console.log(err);
+    }else{
+      res.redirect('/campgrounds');
+    }
+  });
+});
+
+app.delete('/campgrounds/:id', function(req, res){
+  var id = req.params.id;
+  Campground.findByIdAndRemove(id, function(err){
+    if(err){
+      res.redirect('/campgrounds');
+    }else{
+      res.redirect('/campgrounds');
+    }
+  });
+});
+
+//SERVER
 app.listen(3000, function(){
   console.log('running in port 3000');
 })
