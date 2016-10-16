@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var methodOverride = require('method-override');
 var express = require('express');
 var app = express();
+var seed = require('./seeds');
 
 mongoose.connect('mongodb://localhost/yelpcamp');
 app.set('view engine', 'ejs');
@@ -13,13 +14,11 @@ app.use(methodOverride('_method'));
 
 
 //MONGOOSE MODEL/CONFIG
-var campgroundSchema = new mongoose.Schema({
-  name: String,
-  image: String,
-  description: String
-});
+var Comment = require('./models/comment');
+var Campground = require('./models/campground');
 
-var Campground = mongoose.model('Campground', campgroundSchema);
+
+
 
 //ROUTES
 
@@ -56,7 +55,7 @@ app.get('/campgrounds/new', function(req, res){
 
 app.get('/campgrounds/:id', function(req, res){
   var id = req.params.id;
-  Campground.findById(id, function(err, campground){
+  Campground.findById(id).populate('comments').exec(function(err, campground){
     if(err){
       console.log(err);
     }else{
