@@ -38,7 +38,7 @@ router.post('/comments/', isLoggedIn, function(req, res){
 });
 
 
-router.get('/comments/:comment_id/edit', function(req, res){
+router.get('/comments/:comment_id/edit', isAuthorized, function(req, res){
   Comment.findById(req.params.comment_id, function(err, comment){
     if(err){
       console.log(err);
@@ -48,7 +48,7 @@ router.get('/comments/:comment_id/edit', function(req, res){
   })
 });
 
-router.put('/comments/:comment_id', function(req, res){
+router.put('/comments/:comment_id',isAuthorized, function(req, res){
   Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, function(err, comment){
     if(err){
       res.redirect('back');
@@ -58,7 +58,7 @@ router.put('/comments/:comment_id', function(req, res){
   })
 });
 
-router.delete('/comments/:comment_id', function(req, res){
+router.delete('/comments/:comment_id',isAuthorized, function(req, res){
   Comment.findByIdAndRemove(req.params.comment_id, function(err){
     if(err){
       res.redirect('back');
@@ -73,6 +73,24 @@ function isLoggedIn(req, res, next){
     return next();
   }
   res.redirect('/login');
+}
+
+function isAuthorized(req, res, next){
+  if(req.isAuthenticated()){
+    Comment.findById(req.params.comment_id, function(err, comment){
+      if(err){
+        res.redirect('back');
+      }else{
+        if(comment.author.id.equals(req.user._id)){
+          next();
+        }else{
+          res.redirect('back');
+        }
+      }
+    });
+  }else{
+    res.redirect('/login');
+  }
 }
 
 module.exports = router;

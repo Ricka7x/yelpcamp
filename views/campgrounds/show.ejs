@@ -34,12 +34,15 @@
         <hr>
         <% campground.comments.forEach(function(comment){ %>
           <p><strong><%= comment.author.username%></strong> <%= comment.text%> </p>
+          <% if(currentUser && comment.author.id.equals(currentUser._id)){ %>
           <a class="btn btn-xs btn-info" href="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>/edit">
             Edit
           </a>
+          
           <form class="form-inline" action="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>?_method=DELETE" method="POST">
             <button class="btn btn-xs btn-danger">Delete</button>
           </form>
+          <% } %>
         <% })%>
       </div>
 
