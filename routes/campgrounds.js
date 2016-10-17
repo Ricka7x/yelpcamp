@@ -15,6 +15,8 @@ router.get('/campgrounds', function(req, res){
 
 router.post('/campgrounds', isLoggedIn, function(req, res){
   req.body.campground.description = req.sanitize(req.body.campground.description);
+
+  req.body.campground.author = {id: req.user._id, username: req.user.username}
   var newCampground = req.body.campground;
   Campground.create(newCampground, function(err, campground){
     if(err){
