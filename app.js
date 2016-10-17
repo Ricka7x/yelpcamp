@@ -11,6 +11,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressSanitazer()); //always after body parser
 app.use(methodOverride('_method'));
+app.use(express.static(__dirname + '/public'));
 
 
 //MONGOOSE MODEL/CONFIG

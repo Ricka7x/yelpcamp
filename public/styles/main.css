@@ -1,0 +1,15 @@
+.thumbnail img{
+  width: 100%;
+}
+
+.btn-inline{
+  display: inline-block;
+}
+
+form.form-inline {
+    display: inline;
+}
+
+.navbar{
+  margin-bottom: 0;
+}

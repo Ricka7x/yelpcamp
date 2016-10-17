@@ -10,8 +10,6 @@
   </div>
 </header>
 
-<a href="/">Back to home page</a>
-
 <div class="container">
   <div class="row text-center">
     <h3>Checkout campgrounds from all over the world</h3>
@@ -24,9 +22,9 @@
           <div class="caption text-center">
             <h4><%= campground.name %></h4>
             <p><%= campground.description.substring(0,50) %>...</p>
-          </div>
-          <div class="text-center">
-            <a class="btn btn-primary" href="/campgrounds/<%= campground._id%>">More info</a>
+            <div class="text-center">
+              <a class="btn btn-primary" href="/campgrounds/<%= campground._id%>">More info</a>
+            </div>
           </div>
         </div>
       </div>
