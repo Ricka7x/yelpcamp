@@ -43,18 +43,14 @@ router.get('/campgrounds/:id', function(req, res){
   });
 });
 
-router.get('/campgrounds/:id/edit', isLoggedIn, function(req, res){
+router.get('/campgrounds/:id/edit', isAuthorized, function(req, res){
   var id = req.params.id;
   Campground.findById(id, function(err, campground){
-    if(err){
-      console.log(err);
-    }else{
       res.render('campgrounds/edit',{campground: campground});
-    }
   });
 });
 
-router.put('/campgrounds/:id', isLoggedIn, function(req, res){
+router.put('/campgrounds/:id', isAuthorized, function(req, res){
   req.body.campground.description = req.sanitize(req.body.campground.description);
   var id = req.params.id;
   var campground = req.body.campground;
@@ -67,7 +63,7 @@ router.put('/campgrounds/:id', isLoggedIn, function(req, res){
   });
 });
 
-router.delete('/campgrounds/:id', isLoggedIn, function(req, res){
+router.delete('/campgrounds/:id', isAuthorized, function(req, res){
   var id = req.params.id;
   Campground.findByIdAndRemove(id, function(err){
     if(err){
@@ -85,4 +81,21 @@ function isLoggedIn(req, res, next){
   res.redirect('/login');
 }
 
+function isAuthorized(req, res, next){
+  if(req.isAuthenticated()){
+    Campground.findById(req.params.id, function(err, campground){
+      if(err){
+        res.redirect('back');
+      }else{
+        if(campground.author.id.equals(req.user._id)){
+          next();
+        }else{
+          res.redirect('back');
+        }
+      }
+    });
+  }else{
+    res.redirect('/login');
+  }
+}
 module.exports = router;
