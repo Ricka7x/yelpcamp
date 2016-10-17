@@ -20,7 +20,8 @@ var Comment = require('./models/comment');
 var Campground = require('./models/campground');
 var User = require('./models/user');
 
-mongoose.connect('mongodb://localhost/yelpcamp');
+// mongoose.connect('mongodb://localhost/yelpcamp');
+mongoose.connect('mongodb://rick:sasuke@ds021999.mlab.com:21999/ycamp');
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressSanitazer()); //always after body parser
